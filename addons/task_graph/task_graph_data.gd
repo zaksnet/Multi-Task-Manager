@@ -23,21 +23,21 @@ export var connections = []
 func get_inputs():
 	var inputs = []
 	for node in nodes:
-		if node["type"] == INPUT_NODE:
+		if node["type"] == Type.INPUT_NODE:
 			inputs.push_back(node)
 	return inputs
 
 func get_outputs():
 	var outputs = []
 	for node in nodes:
-		if node["type"] == OUTPUT_NODE:
+		if node["type"] == Type.OUTPUT_NODE:
 			outputs.push_back(node)
 	return outputs
 
 func get_tasks():
 	var tasks = []
 	for node in nodes:
-		if node["type"] == TASK_NODE:
+		if node["type"] == Type.TASK_NODE:
 			tasks.push_back(node)
 	return tasks
 

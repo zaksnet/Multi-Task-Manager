@@ -1,9 +1,9 @@
 tool
 extends EditorPlugin
 
-const TaskGraphData = preload("task_graph_data.gd")
+var TaskGraphData = load("res://addons/task_graph/task_graph_data.gd")
 
-var editor_panel = preload("editor/task_graph_editor.tscn").instance()
+var editor_panel = preload("res://addons/task_graph/editor/task_graph_editor.tscn").instance()
 var editor_panel_button
 
 func _enter_tree():
@@ -12,8 +12,8 @@ func _enter_tree():
 	editor_panel_button = add_control_to_bottom_panel(editor_panel, "Task Graph")
 	editor_panel_button.visible = false
 	
-	add_custom_type("TaskGraphData", "Resource", preload("task_graph_data.gd"), preload("task_graph_data_icon.png"))
-	add_custom_type("TaskManager", "Node", preload("task_manager.gd"), preload("task_manager_icon.png"))
+	add_custom_type("TaskGraphData", "Resource", load("res://addons/task_graph/task_graph_data.gd"), preload("res://addons/task_graph/task_graph_data_icon.png"))
+	add_custom_type("TaskManager", "Node", load("res://addons/task_graph/task_manager.gd"), preload("res://addons/task_graph/task_manager_icon.png"))
 	
 
 func _exit_tree():

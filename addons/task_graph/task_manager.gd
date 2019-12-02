@@ -2,8 +2,8 @@ tool
 extends Node
 
 #const TaskGraphData = preload("res://addons/task_graph/task_graph_data.gd")
-const TaskGraphData = preload("task_graph_data.gd")
-const ThreadPool = preload("thread_utils/thread_pool.gd")
+const TaskGraphData = preload("res://addons/task_graph/task_graph_data.gd")
+const ThreadPool = preload("res://addons/task_graph/thread_utils/thread_pool.gd")
 
 #signal task_finished(task)
 signal output_ready(output_name, output)
@@ -87,9 +87,9 @@ func get_progress():
 	for node in nodes:
 		var node_total = node.get_total_progress()
 		total_progress += node_total
-		if node.status == STATUS_RUNNING:
+		if node.status == TaskStatus.STATUS_RUNNING:
 			progress += node.get_progress()
-		elif node.status == STATUS_FINISHED:
+		elif node.status == TaskStatus.STATUS_FINISHED:
 			progress += node_total
 	return progress / total_progress
 
@@ -105,7 +105,7 @@ enum TaskStatus{
 }
 
 class Task extends Reference:
-	var status = STATUS_WAITING
+	var status = TaskStatus.STATUS_WAITING
 	
 	var inputs_needed = 0
 	var outputs = []
@@ -127,9 +127,9 @@ class Task extends Reference:
 		mutex.unlock()
 	
 	func _run():
-		status = STATUS_RUNNING
+		status = TaskStatus.STATUS_RUNNING
 		task._run()
-		status = STATUS_FINISHED
+		status = TaskStatus.STATUS_FINISHED
 		for output in outputs:
 			output[1].add_input(output[2], task.get(output[0]))
 	
@@ -140,7 +140,7 @@ class Task extends Reference:
 		return task.total_progress if "total_progress" in task else 1
 
 class InputTask extends Reference:
-	var status = STATUS_WAITING
+	var status = TaskStatus.STATUS_WAITING
 	
 	var outputs = []
 	
@@ -150,19 +150,19 @@ class InputTask extends Reference:
 		outer = p_outer
 	
 	func _run():
-		status = STATUS_RUNNING
+		status = TaskStatus.STATUS_RUNNING
 		for output in outputs:
 			output[1].add_input(output[2], outer._inputs[output[0]])
-		status = STATUS_FINISHED
+		status = TaskStatus.STATUS_FINISHED
 	
 	func get_progress():
-		return 1 if status == STATUS_FINISHED else 0
+		return 1 if status == TaskStatus.STATUS_FINISHED else 0
 	
 	func get_total_progress():
 		return 1
 
 class OutputTask extends Reference:
-	var status = STATUS_WAITING
+	var status = TaskStatus.STATUS_WAITING
 	
 	var inputs_needed = 0
 	
@@ -172,12 +172,12 @@ class OutputTask extends Reference:
 		outer = p_outer
 	
 	func add_input(input_name, value):
-		status = STATUS_RUNNING
+		status = TaskStatus.STATUS_RUNNING
 		outer.call_deferred("_set_output", input_name, value)
-		status = STATUS_FINISHED
+		status = TaskStatus.STATUS_FINISHED
 	
 	func get_progress():
-		return 1 if status == STATUS_FINISHED else 0
+		return 1 if status == TaskStatus.STATUS_FINISHED else 0
 	
 	func get_total_progress():
 		return 1

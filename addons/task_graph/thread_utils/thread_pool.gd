@@ -1,6 +1,6 @@
 extends Reference
 
-const AtomicList = preload("atomic_list.gd")
+const AtomicList = preload("res://addons/task_graph/thread_utils/atomic_list.gd")
 
 var _amount
 var _sem = Semaphore.new()
